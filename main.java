@@ -1,6 +1,11 @@
 import java.io.File; 
 import java.io.FileNotFoundException; 
 import java.util.*; 
+//import filess.InFile;
+
+//******************************************************************************************************
+// aircraft class
+//******************************************************************************************************
 
 class AirCraftData {
 	private String AirCraftType;
@@ -21,7 +26,7 @@ class AirCraftData {
 
 		String[] LineData = line.split(" ");
 		if (LineData.length != 5)
-			throw new IllegalStateException("Object not initialised");
+			throw new IllegalStateException("hold my phone");
 
 		AirCraftType = LineData[0];
 		AirCraftName = LineData[1];
@@ -29,7 +34,15 @@ class AirCraftData {
 		Latitude = Integer.parseInt(LineData[3]);
 		Height = Integer.parseInt(LineData[4]);
 	}
+
 }
+
+
+//******************************************************************************************************
+// file reading class
+//******************************************************************************************************
+
+
 
 class InFile {
 
@@ -38,57 +51,89 @@ class InFile {
 
 
 
+	private void ReadFromFile() throws Exception {
 
-private void ReadFromFile() throws Exception {
-
-File file = new File(InFileName);
-Scanner sc = new Scanner(file);
-List<AirCraftData> ListOfAirCraft;
+		File file = new File(InFileName);
+		Scanner sc = new Scanner(file);
 
 
-while (sc.hasNextLine()){
-	FileContent.push(sc.nextLine() + "\n");
-}
-	Iterator<String> hold = FileContent.iterator();
-	while(hold.hasNext()){
-	System.out.println(hold.next());
+		while (sc.hasNextLine()){
+			FileContent.push(sc.nextLine() + "\n");
+		}
+			}
+
+	public InFile(String infile) throws Exception
+	{
+		InFileName = infile;
+		FileContent = new Stack<String>();
+		ReadFromFile();
+ 	}
+
+	public int GetFileData(ArrayList<AirCraftData> src) throws Exception {
+		Iterator<String> FileIter = FileContent.iterator();
+		AirCraftData HoldAirCraftData;
+		String HoldString;
+		int RunTime = 0;
+		boolean IsFirst = true;
+
+		while(FileIter.hasNext()){
+			HoldString = FileIter.next();
+			HoldString = HoldString.trim();
+			if (IsFirst){
+				for (int i = 0; i < HoldString.length(); i++){
+					if (!Character.isDigit(HoldString.charAt(i)))
+						throw new IllegalStateException("Invalid file");
+					}
+				IsFirst = !IsFirst;
+				RunTime = Integer.parseInt(HoldString);
+			System.out.println(HoldString);
+			}else{
+				HoldAirCraftData = new AirCraftData();
+				HoldAirCraftData.GetAirCraftData(HoldString);
+			src.add(HoldAirCraftData);
+			System.out.println(HoldString);
+			}
+		}
+
+
+		return (RunTime);
 	}
-//	System.out.println(FileContent); 
+
+	public String GetFileName(){return InFileName;}
 
 }
 
-public InFile(String infile) throws Exception
-{
-	InFileName = infile;
-	FileContent = new Stack<String>();
-	List<AirCraftData> ListOfAirCraft = new ArrayList<AirCraftData>();
-	ReadFromFile();
- }
 
-public String get(){return InFileName;}
-
-}
+//******************************************************************************************************
+//  main file
+//******************************************************************************************************
 
 
 public class main{
 
-public static void main (String[] args){
+	public static void main (String[] args){
+	int RunTime = 0;
+	ArrayList<AirCraftData> ListOfAirCraft = new ArrayList<AirCraftData>();
 
-if (args.length == 0 || args[0].isEmpty()){
-	System.out.println("No File To Read Form");
-	return ;
-}
-try{InFile FileToRead = new InFile(args[0]);}
-catch (Exception e){
-	System.out.println("Unable to read from file");
-	return ;
-}
-	//	InFile FileToRead;// = InFile(args[0]);
-	//
-System.out.println("hello world!");
-//System.out.println(FileToRead.get());
-return;
-}
+	//file to read input protaction
+	if (args.length == 0 || args[0].isEmpty()){
+		System.out.println("No File To Read Form");
+		return ;
+	}
+	//read file protaction
+	try{
+		//read file data
+		InFile FileToRead = new InFile(args[0]);
+		System.out.println(FileToRead.GetFileData(ListOfAirCraft));//FileToRead.GetFileName());
+		//put data somewere
+	}catch (Exception e){
+		//it failed
+		System.out.println("Unable to read from file");
+		return ;
+	}
 
 
+	System.out.println("hello world!");
+	return;
+	}
 }
