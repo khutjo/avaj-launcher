@@ -1,139 +1,313 @@
-import java.io.File; 
-import java.io.FileNotFoundException; 
-import java.util.*; 
-//import filess.InFile;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
-//******************************************************************************************************
-// aircraft class
-//******************************************************************************************************
-
-class AirCraftData {
-	private String AirCraftType;
-	private String AirCraftName;
-	private int Latitude;
+//***************************************************************************************
+//***************************************************************************************
+//                                Coordinate class                                     //
+//***************************************************************************************
+//***************************************************************************************
+class Coordinates {
 	private int Longitude;
+	private int Latitude;
 	private int Height;
 
-	public AirCraftData(){
-		AirCraftType = "NULL";
-		AirCraftName = "NULL";
-		Longitude = 0;
-		Latitude = 0;
-		Height = 0;
+	public Coordinates(int longitude, int  latitude, int height){
+		Longitude = longitude;
+		Latitude = latitude;
+		Height = height;
 	}
 
-	public void GetAirCraftData(String line) throws Exception{
+	public int getLongitude(){return (Longitude);}
+	public int getLatitude(){return (Latitude);}
+	public int getHeight(){return (Height);}
+}
 
-		String[] LineData = line.split(" ");
-		if (LineData.length != 5)
-			throw new IllegalStateException("hold my phone");
+//***************************************************************************************
+//***************************************************************************************
+//                                AirCraft class                                       //
+//***************************************************************************************
+//***************************************************************************************
 
-		AirCraftType = LineData[0];
-		AirCraftName = LineData[1];
-		Longitude = Integer.parseInt(LineData[2]);
-		Latitude = Integer.parseInt(LineData[3]);
-		Height = Integer.parseInt(LineData[4]);
+class Aircraft {
+	protected long id;
+	protected String name;
+	protected Coordinates coordinates;
+	private static long idCounter;
+
+	protected Aircraft(String name, Coordinates coordinates){
+		this.name = name;
+		this.coordinates = coordinates;
+		id = nextid();
+	}
+
+	private long nextid(){return (idCounter++);}
+}
+
+//***************************************************************************************
+//***************************************************************************************
+//                                flyable class                                        //
+//***************************************************************************************
+//***************************************************************************************
+
+interface Flyable {
+
+	public void updateCondition();
+	public void registerTower(WeatherTower WeatherTower);
+
+}
+
+
+
+//***************************************************************************************
+//***************************************************************************************
+//                                flying machine class                                 //
+//***************************************************************************************
+//***************************************************************************************
+
+class Helicopter extends Aircraft implements Flyable {
+	private WeatherTower weatherTower;
+
+	public Helicopter(String name, Coordinates coordinates){super(name, coordinates);}
+
+	public void updateCondition(){};
+	public void registerTower(WeatherTower weatherTower){
+	//	this.weatherTower = weatherTower;
+	//	System.out.println("Helicopter"+name+"("+id+") registered to weather tower.");
+	}
+
+}
+
+class JetPlane extends Aircraft implements Flyable {
+	private WeatherTower weatherTower;
+
+	public JetPlane(String name, Coordinates coordinates){super(name, coordinates);}
+
+	public void updateCondition(){}
+	public void registerTower(WeatherTower weatherTower){
+	//	this.weatherTower = weatherTower;
+	//	System.out.println("JetPlane#"+name+"("+id+") registered to weather tower.");
+	}
+
+}
+
+class Baloon extends Aircraft implements Flyable {
+	private WeatherTower weatherTower;
+
+	public Baloon(String name, Coordinates coordinates){super(name, coordinates);}
+
+	public void updateCondition(){}
+	public void registerTower(WeatherTower weatherTower){
+	//	this.weatherTower = weatherTower;
+	//	System.out.println("Baloon"+name+"("+id+") registered to weather tower.");
+	}
+
+}
+
+//***************************************************************************************
+//***************************************************************************************
+//                                     Aircraft factory class                          //
+//***************************************************************************************
+//***************************************************************************************
+
+class AircraftFacroty {
+	
+	public Flyable newAircraft(String name, String type, int longitude, int latitude, int height){
+		Coordinates coordinates = new Coordinates(longitude, latitude, height);
+
+		if (type.equals("Helicopter")){
+			return new Helicopter(name, coordinates);
+		}else if (type.equals("JetPlane")){
+			return new JetPlane(name, coordinates);
+		}else if (type.equals("Baloon")){
+			return new Baloon(name, coordinates);
+		}
+		return null;
 	}
 
 }
 
 
-//******************************************************************************************************
-// file reading class
-//******************************************************************************************************
+//***************************************************************************************
+//***************************************************************************************
+//                                   Tower class                                       //
+//***************************************************************************************
+//***************************************************************************************
+
+class Tower{
+	private ArrayList<Flyable> observers;
+
+	public void register(Flyable Flyable){
+		if (observers == null)
+			observers = new ArrayList<Flyable>();
+		observers.add(Flyable);
+//		System.out.print("Tower Says: ");
+		if ((WeatherTower)this != null)//System.out.println("hi");
+			Flyable.registerTower((WeatherTower)this);
+	}
+	public void unregister(Flyable Flyable){}
+	protected void conditionChanged(){}
+}
+
+//***************************************************************************************
+//***************************************************************************************
+//                               Weather Tower class                                   //
+//***************************************************************************************
+//***************************************************************************************
+
+class WeatherTower extends Tower{
+	
+	public String getWeather(Coordinates coordinates){
+
+	   return ("hello");
+	}
 
 
+}
 
-class InFile {
+//***************************************************************************************
+//***************************************************************************************
+//                               Weather provider class                                //
+//***************************************************************************************
+//***************************************************************************************
 
-	private String InFileName;
-	Stack<String> FileContent;
+class WeatherProvider {
+	private static WeatherProvider weatherprovider = null;
+	private static String[] weather = {"RAIN", "FOG", "SUN", "SNOW"};
+
+	private WeatherProvider(){}
+
+	public static WeatherProvider getProvider(){
+		if (weatherprovider == null)
+			weatherprovider = new WeatherProvider();
+		return weatherprovider;
+	}
+
+	public String getCurrentWeather(Coordinates coordinates){
+		Random rand = new Random();
+		int n = rand.nextInt(4);
+		return (weather[n]);
+	}
+
+}
+
+//***************************************************************************************
+//***************************************************************************************
+//                                   sorted data class                                 //
+//***************************************************************************************
+//***************************************************************************************
 
 
+class SortData{
+	private String AirCraftType;
+	private String AirCraftName;
+	private int Longitude;
+	private int Latitude;
+	private int Height;
 
-	private void ReadFromFile() throws Exception {
+	private int isDigitElseError(String NumberToString){
+		NumberToString = NumberToString.trim(); 
+		for (char ch: NumberToString.toCharArray())
+			if (!Character.isDigit(ch))
+				throw new IllegalStateException("Invalid File Format");
+		return Integer.parseInt(NumberToString);
+	}
 
-		File file = new File(InFileName);
-		Scanner sc = new Scanner(file);
-
-
-		while (sc.hasNextLine()){
-			FileContent.push(sc.nextLine() + "\n");
-		}
+	public SortData(String FileLine){
+		String[] HoldFileData = FileLine.split(" ");
+	//	System.out.println(HoldFileData[1]);
+		if (HoldFileData.length != 5)
+			throw new IllegalStateException("Invalid File Format");
+		if (HoldFileData[0].equals("Helicopter") 
+			|| HoldFileData[0].equals("JetPlane")
+			|| HoldFileData[0].equals("Baloon")){
+				AirCraftType = HoldFileData[0];
 			}
+		AirCraftName = HoldFileData[1];
+		Longitude = isDigitElseError(HoldFileData[2]);
+		Latitude = isDigitElseError(HoldFileData[3]);
+		Height = isDigitElseError(HoldFileData[4]);
 
-	public InFile(String infile) throws Exception
-	{
-		InFileName = infile;
-		FileContent = new Stack<String>();
-		ReadFromFile();
- 	}
+	}
 
-	public int GetFileData(ArrayList<AirCraftData> src) throws Exception {
-		Iterator<String> FileIter = FileContent.iterator();
-		AirCraftData HoldAirCraftData;
+	public String getAirCraftType(){return (AirCraftType);}
+	public String getAirCraftName(){return (AirCraftName);}
+	public int getLongitude(){return (Longitude);}
+	public int getLatitude(){return (Latitude);}
+	public int getHeight(){return (Height);}
+}
+
+
+//***************************************************************************************
+//***************************************************************************************
+//                                         main class                                  //
+//***************************************************************************************
+//***************************************************************************************
+
+
+public class main {
+
+	public static Stack<String>  ReadFileData(String[] args) {
+		Stack<String> FileData = new Stack<String>();
 		String HoldString;
-		int RunTime = 0;
-		boolean IsFirst = true;
 
-		while(FileIter.hasNext()){
-			HoldString = FileIter.next();
-			HoldString = HoldString.trim();
-			if (IsFirst){
-				for (int i = 0; i < HoldString.length(); i++){
-					if (!Character.isDigit(HoldString.charAt(i)))
-						throw new IllegalStateException("Invalid file");
-					}
-				IsFirst = !IsFirst;
-				RunTime = Integer.parseInt(HoldString);
-			System.out.println(HoldString);
-			}else{
-				HoldAirCraftData = new AirCraftData();
-				HoldAirCraftData.GetAirCraftData(HoldString);
-			src.add(HoldAirCraftData);
-			System.out.println(HoldString);
+		if (args.length == 0 || args[0].isEmpty())
+			throw new IllegalStateException("No File Inputed");
+
+		File InFile = new File(args[0]);
+		try{Scanner FileReader = new Scanner(InFile);
+			while (FileReader.hasNextLine()){
+				HoldString = FileReader.nextLine();
+				HoldString = HoldString.trim();
+				FileData.push(HoldString);
 			}
+		}catch (FileNotFoundException e){
+			throw new IllegalStateException("Invalid File Inputed");
 		}
-
-
-		return (RunTime);
+		return (FileData);
 	}
 
-	public String GetFileName(){return InFileName;}
-
-}
-
-
-//******************************************************************************************************
-//  main file
-//******************************************************************************************************
-
-
-public class main{
-
-	public static void main (String[] args){
-	int RunTime = 0;
-	ArrayList<AirCraftData> ListOfAirCraft = new ArrayList<AirCraftData>();
-
-	//file to read input protaction
-	if (args.length == 0 || args[0].isEmpty()){
-		System.out.println("No File To Read Form");
-		return ;
+	public static ArrayList<SortData> ReadAndAddData(Stack<String> src){
+		String HoldString;
+		SortData HoldSortedData;
+		ArrayList<SortData> ReturnSortedData = new ArrayList<SortData>();
+		Iterator<String> HoldFileIter = src.iterator();
+//		System.out.println(HoldFileIter.next());
+		HoldFileIter.next();
+//		for (String HoldString :  
+		while (HoldFileIter.hasNext()){
+//			HoldString = FileIter.
+			HoldSortedData = new SortData(HoldFileIter.next());
+			ReturnSortedData.add(HoldSortedData);
+		}
+		return ReturnSortedData;
 	}
-	//read file protaction
-	try{
-		//read file data
-		InFile FileToRead = new InFile(args[0]);
-		System.out.println(FileToRead.GetFileData(ListOfAirCraft));//FileToRead.GetFileName());
-		//put data somewere
-	}catch (Exception e){
-		//it failed
-		System.out.println("Unable to read from file");
-		return ;
+	
+	public static int getRunTime(Stack<String> src){
+		String HoldString;
+		Iterator<String> HoldFileIter = src.iterator();
+		HoldString = HoldFileIter.next();
+//		System.out.println(HoldString);
+//		HoldString = HoldString.trim();
+		for (char ch: HoldString.toCharArray())
+			if (!Character.isDigit(ch))
+				throw new IllegalStateException("Invalid RunTime Inputed");
+		return Integer.parseInt(HoldString);
 	}
 
+	public static void main(String[] args)  {
+		int RunTime = 0;
+		Stack<String> FileData = ReadFileData(args);
+		ArrayList<SortData> InPutData;// = new ArrayList<SortData>();
+		WeatherTower WeatherTower = new WeatherTower();
+		AircraftFacroty MakeClass = new AircraftFacroty();
+		RunTime = getRunTime(FileData);
+		InPutData = ReadAndAddData(FileData); 
+//		System.out.println(FileData);
+		System.out.println("RunTime : "+RunTime);		
 
-	System.out.println("hello world!");
-	return;
+		for (SortData i : InPutData) {
+			WeatherTower.register(MakeClass.newAircraft(i.getAirCraftType()
+						,i.getAirCraftName(),i.getLongitude(),i.getLatitude(),i.getHeight()));}
 	}
 }
