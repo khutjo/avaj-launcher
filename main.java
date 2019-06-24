@@ -1,12 +1,59 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+
+
+
+//***************************************************************************************
+//***************************************************************************************
+//                                File Writer class                                    //
+//***************************************************************************************
+//***************************************************************************************
+
+class FileWriters {
+	private static FileWriters filewriter;
+	private static FileWriter FileDis;
+
+	private FileWriters(){}
+
+	public static FileWriters getWriter(){
+		if (filewriter == null){
+			try{
+			File InFile = new File("simulation.txt");
+			FileDis = new FileWriter(InFile);
+			FileDis.flush();
+
+			}catch (Exception e){
+				throw new IllegalStateException("Unable To Open file");
+			}
+		}
+		return filewriter;
+	}
+
+	public void WriteToFile(String TextToFile){
+		try{
+			FileDis.write(TextToFile);
+		}catch(Exception e){
+			throw new IllegalStateException("Unable To Write To File");
+		}
+	}
+
+	public void Distruct(){
+		try{
+		FileDis.close();
+		}catch(Exception e){
+			throw new IllegalStateException("Unable To Close File");
+		}
+	}
+}
 
 //***************************************************************************************
 //***************************************************************************************
 //                                Coordinate class                                     //
 //***************************************************************************************
 //***************************************************************************************
+
 class Coordinates {
 	private int Longitude;
 	private int Latitude;
@@ -66,14 +113,59 @@ interface Flyable {
 //***************************************************************************************
 
 class Helicopter extends Aircraft implements Flyable {
+
 	private WeatherTower weatherTower;
 
 	public Helicopter(String name, Coordinates coordinates){super(name, coordinates);}
 
-	public void updateCondition(){};
+	public void updateCondition(){
+		String weather = this.weatherTower.getWeather(this.coordinates);
+		FileWriters fileWriter = FileWriters.getWriter();
+		int longitude = 0;
+		int latitude = 0;
+		int height = 0;
+		
+		System.out.print("Helicopter#"+this.name+"("+this.id+") ");
+		switch(weather) {
+			case "SUN":
+				longitude = this.coordinates.getLongitude();
+				latitude = this.coordinates.getLatitude() + 10;
+				height = this.coordinates.getHeight() + 2;
+				fileWriter.WriteToFile("the sun is shining your cool.\n");
+				// System.out.println("the sun is shining your cool.");
+			break;
+			case "RAIN":
+				longitude = this.coordinates.getLongitude();
+				latitude = this.coordinates.getLatitude() + 5;
+				height = this.coordinates.getHeight();
+				fileWriter.WriteToFile("i hope you have doors on that thing.\n");
+				//System.out.println("i hope you have doors on that thing.");
+			break;
+			case "FOG":
+				longitude = this.coordinates.getLongitude();
+				latitude = this.coordinates.getLatitude() + 1;
+				height = this.coordinates.getHeight();
+				fileWriter.WriteToFile("I JUST GOT A MIND FOG.\n");
+				//System.out.println("I JUST GOT A MIND FOG.");
+			break;
+			case "SNOW":
+				longitude = this.coordinates.getLongitude();
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight() - 7;
+				fileWriter.WriteToFile("HAVE YOU TRAID YELLOW SNOW.\n");
+				//System.out.println("HAVE YOU TRAID YELLOW SNOW.");
+			break;
+		}
+		if (height > 100)height = 100;
+		if (height < 1){
+			System.out.println("Helicopter#"+name+"("+id+") Landing");
+			this.weatherTower.unregister(this);
+			return ;}
+		this.coordinates = new Coordinates(longitude, latitude, height);	
+	}
 	public void registerTower(WeatherTower weatherTower){
 		this.weatherTower = weatherTower;
-		System.out.println("Helicopter#"+name+"("+id+") registered to weather tower.");
+		System.out.print("Helicopter#"+name+"("+id+")");
 	}
 
 }
@@ -83,10 +175,50 @@ class JetPlane extends Aircraft implements Flyable {
 
 	public JetPlane(String name, Coordinates coordinates){super(name, coordinates);}
 
-	public void updateCondition(){}
+	public void updateCondition(){
+		String weather = this.weatherTower.getWeather(this.coordinates);
+		int longitude = 0;
+		int latitude = 0;
+		int height = 0;
+
+		System.out.print("JetPlane#"+this.name+"("+this.id+") ");
+		switch(weather) {
+			case "SUN":
+				longitude = this.coordinates.getLongitude() + 10;
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight() + 2;
+				System.out.println("Im am cutting through the sky.");
+			break;
+			case "RAIN":
+				longitude = this.coordinates.getLongitude() + 5;
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight();
+				System.out.println("Im cutting through water i am like a dolphin.");
+			break;
+			case "FOG":
+				longitude = this.coordinates.getLongitude() + 1;
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight();
+				System.out.println("I can't see shit i hope there are no idiots fling in baloon.");
+			break;
+			case "SNOW":
+				longitude = this.coordinates.getLongitude();
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight() - 12;
+				System.out.println("i blame amarica for this design flaw.");
+			break;
+		}
+		if (height > 100)height = 100;
+		if (height < 1){
+			System.out.println("JetPlane#"+name+"("+id+") Landing");
+			this.weatherTower.unregister(this);
+			return ;}
+		this.coordinates = new Coordinates(longitude, latitude, height);
+	}
+
 	public void registerTower(WeatherTower weatherTower){
 		this.weatherTower = weatherTower;
-		System.out.println("JetPlane#"+name+"("+id+") registered to weather tower.");
+		System.out.print("JetPlane#"+name+"("+id+")");
 	}
 
 }
@@ -96,12 +228,51 @@ class Baloon extends Aircraft implements Flyable {
 
 	public Baloon(String name, Coordinates coordinates){super(name, coordinates);}
 
-	public void updateCondition(){}
+	public void updateCondition(){
+		String weather = this.weatherTower.getWeather(this.coordinates);
+		int longitude = 0;
+		int latitude = 0;
+		int height = 0;
+
+		System.out.print("Baloon#"+this.name+"("+this.id+") ");
+		switch(weather) {
+			case "SUN":
+				longitude = this.coordinates.getLongitude() + 2;
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight() + 4;
+				System.out.println("OK i get it i cant afford a JetPlane or a Helicopter but it i a nice day.");
+			break;
+			case "RAIN":
+				longitude = this.coordinates.getLongitude() - 5;
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight();
+				System.out.println("a little bit of rain never hurts.");
+			break;
+			case "FOG":
+				longitude = this.coordinates.getLongitude() - 1;
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight();
+				System.out.println("this is not that bad whats the worst thing that can heppen");
+				break;
+			case "SNOW":
+				longitude = this.coordinates.getLongitude();
+				latitude = this.coordinates.getLatitude();
+				height = this.coordinates.getHeight() - 15;
+				System.out.println("aaaaawwwww shit oh shit oh shit oh shit!!!!!!");
+			break;
+		}
+		if (height > 100)height = 100;
+		if (height < 1){
+			System.out.println("Baloon#"+name+"("+id+") Landing");
+			this.weatherTower.unregister(this);
+			return ;}
+		this.coordinates = new Coordinates(longitude, latitude, height);
+}
 	public void registerTower(WeatherTower weatherTower){
 		this.weatherTower = weatherTower;
-		System.out.println("Baloon#"+name+"("+id+") registered to weather tower.");
+//		System.out.println(
+		System.out.print("Baloon#"+name+"("+id+")");
 	}
-
 }
 
 //***************************************************************************************
@@ -141,13 +312,30 @@ class Tower{
 		if (observers == null)
 			observers = new ArrayList<Flyable>();
 		observers.add(Flyable);
-		System.out.print("Tower Says: ");
+		System.out.print("Tower Says : ");
 //			WeatherTower hold = new WeatherTower();
 		if (Flyable != null)
 			Flyable.registerTower((WeatherTower)this);
+		System.out.println(" registered to weather tower.");
 	}
-	public void unregister(Flyable Flyable){}
-	protected void conditionChanged(){}
+
+	public void unregister(Flyable Flyable){
+//Flyable.getname();
+//		System.out.println(Flyable.getname());
+		System.out.print("Tower Says : ");
+		if (Flyable != null)
+			Flyable.registerTower((WeatherTower)this);
+		System.out.println(" unregisterd");
+		ArrayList<Flyable> HoldObservers = this.observers;
+		this.observers = new ArrayList<Flyable>();
+		for (Flyable Fly : HoldObservers)
+			if (Fly != Flyable)
+				this.observers.add(Fly);
+	}
+	protected void conditionChanged(){
+		for (Flyable Fly : this.observers)
+			Fly.updateCondition();
+	}
 }
 
 //***************************************************************************************
@@ -159,8 +347,8 @@ class Tower{
 class WeatherTower extends Tower{
 	
 	public String getWeather(Coordinates coordinates){
-
-	   return ("hello");
+		WeatherProvider Weather = WeatherProvider.getProvider();
+		return (Weather.getCurrentWeather(coordinates));
 	}
 
 
@@ -306,9 +494,13 @@ public class main {
 		InPutData = ReadAndAddData(FileData); 
 //		System.out.println(FileData);
 		System.out.println("RunTime : "+RunTime);		
-
 		for (SortData i : InPutData) {
 			WeatherTower.register(MakeClass.newAircraft(i.getAirCraftName()
 						,i.getAirCraftType(),i.getLongitude(),i.getLatitude(),i.getHeight()));}
+			System.out.println("");
+		while (0 < RunTime--){
+			WeatherTower.conditionChanged();
+			System.out.println("");
+		}
 	}
 }

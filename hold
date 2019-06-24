@@ -1,0 +1,15 @@
+• JetPlane:
+◦ SUN - Latitude increases with 10, Height increases with 2
+◦ RAIN - Latitude increases with 5
+◦ FOG - Latitude increases with 1
+◦ SNOW - Height decreases with 7
+• Helicopter:
+◦ SUN - Longitude increases with 10, Height increases with 2
+◦ RAIN - Longitude increases with 5
+◦ FOG - Longitude increases with 1
+◦ SNOW - Height decreases with 12
+• Baloon:
+◦ SUN - Longitude increases with 2, Height increases with 4
+◦ RAIN - Height decreases with 5
+◦ FOG - Height decreases with 3
+◦ SNOW - Height decreases with 15
