@@ -72,8 +72,8 @@ class Helicopter extends Aircraft implements Flyable {
 
 	public void updateCondition(){};
 	public void registerTower(WeatherTower weatherTower){
-	//	this.weatherTower = weatherTower;
-	//	System.out.println("Helicopter"+name+"("+id+") registered to weather tower.");
+		this.weatherTower = weatherTower;
+		System.out.println("Helicopter#"+name+"("+id+") registered to weather tower.");
 	}
 
 }
@@ -85,8 +85,8 @@ class JetPlane extends Aircraft implements Flyable {
 
 	public void updateCondition(){}
 	public void registerTower(WeatherTower weatherTower){
-	//	this.weatherTower = weatherTower;
-	//	System.out.println("JetPlane#"+name+"("+id+") registered to weather tower.");
+		this.weatherTower = weatherTower;
+		System.out.println("JetPlane#"+name+"("+id+") registered to weather tower.");
 	}
 
 }
@@ -98,8 +98,8 @@ class Baloon extends Aircraft implements Flyable {
 
 	public void updateCondition(){}
 	public void registerTower(WeatherTower weatherTower){
-	//	this.weatherTower = weatherTower;
-	//	System.out.println("Baloon"+name+"("+id+") registered to weather tower.");
+		this.weatherTower = weatherTower;
+		System.out.println("Baloon#"+name+"("+id+") registered to weather tower.");
 	}
 
 }
@@ -141,8 +141,9 @@ class Tower{
 		if (observers == null)
 			observers = new ArrayList<Flyable>();
 		observers.add(Flyable);
-//		System.out.print("Tower Says: ");
-		if ((WeatherTower)this != null)//System.out.println("hi");
+		System.out.print("Tower Says: ");
+//			WeatherTower hold = new WeatherTower();
+		if (Flyable != null)
 			Flyable.registerTower((WeatherTower)this);
 	}
 	public void unregister(Flyable Flyable){}
@@ -307,7 +308,7 @@ public class main {
 		System.out.println("RunTime : "+RunTime);		
 
 		for (SortData i : InPutData) {
-			WeatherTower.register(MakeClass.newAircraft(i.getAirCraftType()
-						,i.getAirCraftName(),i.getLongitude(),i.getLatitude(),i.getHeight()));}
+			WeatherTower.register(MakeClass.newAircraft(i.getAirCraftName()
+						,i.getAirCraftType(),i.getLongitude(),i.getLatitude(),i.getHeight()));}
 	}
 }
