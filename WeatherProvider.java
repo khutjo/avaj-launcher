@@ -19,7 +19,14 @@ class WeatherProvider {
 	}
 
 	public String getCurrentWeather(Coordinates coordinates){
-		Random rand = new Random();
+		Random SpicySeed = new Random();
+		int longitude = coordinates.getLongitude();
+		int latitude = coordinates.getLatitude();
+		int height = coordinates.getHeight();
+		long weatherseed = longitude * latitude * height *
+		SpicySeed.nextInt(500);
+
+		Random rand = new Random(weatherseed);
 		int n = rand.nextInt(4);
 		return (weather[n]);
 	}

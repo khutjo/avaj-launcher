@@ -15,7 +15,7 @@ class JetPlane extends Aircraft implements Flyable {
 		int latitude = 0;
 		int height = 0;
 
-		FileWriters.puttofile("JetPlane#"+this.name+"("+this.id+") ");
+		FileWriters.puttofile("JetPlane#"+this.name+"("+this.id+") : ");
 		switch(weather) {
 			case "SUN":
 				longitude = this.coordinates.getLongitude() + 10;
@@ -53,7 +53,7 @@ class JetPlane extends Aircraft implements Flyable {
 
 	public void registerTower(WeatherTower weatherTower){
 		this.weatherTower = weatherTower;
-		FileWriters.puttofile("JetPlane#"+name+"("+id+")");
+		FileWriters.puttofile("JetPlane#"+name+"("+id+") : ");
 	}
 
 }

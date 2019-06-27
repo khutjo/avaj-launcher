@@ -7,6 +7,21 @@ import java.io.FileWriter;
 //***************************************************************************************
 //***************************************************************************************
 
+class FileWritersException extends RuntimeException 
+{ 
+    //private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 1L;
+
+	public FileWritersException(String s) 
+    { 
+		System.out.println(s);
+		// Call constructor of parent Exception 
+        //super(s); 
+
+    } 
+} 
+
 class FileWriters {
 	private static boolean firstrun;
 
@@ -19,7 +34,7 @@ class FileWriters {
 				fw.flush();//write("Welcome to javaTpoint.");    
 				fw.close();
 			}catch (Exception e){
-				throw new IllegalStateException("Unable clear file");
+				throw new FileWritersException("Unable clear file");
 			}
 			firstrun = true;
 		}
@@ -29,7 +44,7 @@ class FileWriters {
 			FileDis.write(str + "\n"); 
 			FileDis.close(); 
 		}catch (Exception e){
-			throw new IllegalStateException("Unable To Open file");
+			throw new FileWritersException("Unable To Open file");
 		}
 	}
 
@@ -40,7 +55,7 @@ class FileWriters {
 				fw.flush();//write("Welcome to javaTpoint.");    
 				fw.close();
 			}catch (Exception e){
-				throw new IllegalStateException("Unable clear file");
+				throw new FileWritersException("Unable clear file");
 			}
 			firstrun = true;
 		}
@@ -50,7 +65,7 @@ class FileWriters {
 			FileDis.write(str); 
 			FileDis.close(); 
 		}catch (Exception e){
-			throw new IllegalStateException("Unable To Open file");
+			throw new FileWritersException("Unable To Open file");
 		}
 	}
 }

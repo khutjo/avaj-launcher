@@ -18,7 +18,7 @@ class Helicopter extends Aircraft implements Flyable {
 		int latitude = 0;
 		int height = 0;
 		
-		FileWriters.puttofile("Helicopter#"+this.name+"("+this.id+") ");
+		FileWriters.puttofile("Helicopter#"+this.name+"("+this.id+") : ");
 		switch(weather) {
 			case "SUN":
 				longitude = this.coordinates.getLongitude();
@@ -55,7 +55,7 @@ class Helicopter extends Aircraft implements Flyable {
 		}
 		if (height > 100)height = 100;
 		if (height < 1){
-			FileWriters.puttofileln("\nHelicopter#"+name+"("+id+") Landing");
+			FileWriters.puttofileln("\nHelicopter#"+name+"("+id+") : Landing");
 			this.weatherTower.unregister(this);
 			return ;}
 		FileWriters.puttofileln(" weather condition : weather");
@@ -64,7 +64,7 @@ class Helicopter extends Aircraft implements Flyable {
 
 	public void registerTower(WeatherTower weatherTower){
 		this.weatherTower = weatherTower;
-		FileWriters.puttofile("Helicopter#"+name+"("+id+")");
+		FileWriters.puttofile("Helicopter#"+name+"("+id+") : ");
 	}
 
 }

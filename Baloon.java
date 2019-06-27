@@ -15,7 +15,7 @@ class Baloon extends Aircraft implements Flyable {
 		int latitude = 0;
 		int height = 0;
 
-		FileWriters.puttofile("Baloon#"+this.name+"("+this.id+") ");
+		FileWriters.puttofile("Baloon#"+this.name+"("+this.id+") : ");
 		switch(weather) {
 			case "SUN":
 				longitude = this.coordinates.getLongitude() + 2;
@@ -54,6 +54,6 @@ class Baloon extends Aircraft implements Flyable {
 	public void registerTower(WeatherTower weatherTower){
 		this.weatherTower = weatherTower;
 //		FileWriters.puttofileln(
-		FileWriters.puttofile("Baloon#"+name+"("+id+")");
+		FileWriters.puttofile("Baloon#"+name+"("+id+") : ");
 	}
 }

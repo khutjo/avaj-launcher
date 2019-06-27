@@ -4,9 +4,9 @@
 //***************************************************************************************
 //***************************************************************************************
 
-class AircraftFacroty {
+public abstract class AircraftFacroty {
 	
-	public Flyable newAircraft(String name, String type, int longitude, int latitude, int height){
+	public static Flyable newAircraft(String name, String type, int longitude, int latitude, int height){
 		Coordinates coordinates = new Coordinates(longitude, latitude, height);
 
 		if (type.equals("Helicopter")){

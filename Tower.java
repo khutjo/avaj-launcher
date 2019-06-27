@@ -6,7 +6,7 @@ import java.util.*;
 //***************************************************************************************
 //***************************************************************************************
 
-class Tower{
+public abstract class Tower{
 	private ArrayList<Flyable> observers;
 
 	public void register(Flyable Flyable){
@@ -34,7 +34,9 @@ class Tower{
 				this.observers.add(Fly);
 	}
 	protected void conditionChanged(){
-		for (Flyable Fly : this.observers)
+		FileWriters.puttofileln("");
+		for (Flyable Fly : this.observers){
 			Fly.updateCondition();
+		}
 	}
 }
